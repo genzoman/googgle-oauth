@@ -1,7 +1,9 @@
 var authConfig = require('./config/secrets'),
   express = require('express'),
   passport = require('passport'),
-  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+  TwitterStrategy = require("passport-twitter"),
+  SECRETS = require("./config/secrets")
 
 passport.serializeUser(function(user, done) {
 
@@ -18,6 +20,16 @@ passport.use(new GoogleStrategy(
 
   function(accessToken, refreshToken, profile, done) {
     return done(null, profile);
+  }
+));
+
+passport.use(new TwitterStrategy({
+    consumerKey: SECRETS.twitter.clientID,
+    consumerSecret: SECRETS.twitter.clientSecret,
+    callbackURL: "http://localhost:3000/auth/twitter/callback"
+  },
+  function(token, tokenSecret, profile, cb) {
+    cb();
   }
 ));
 
@@ -58,6 +70,14 @@ app.get('/login', function(req, res) {
     user: req.user
   });
 });
+
+app.get("/auth/twitter", passport.authenticate("twitter"));
+app.get('/auth/twitter/callback',
+  passport.authenticate('twitter', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['openid email profile'] }));
