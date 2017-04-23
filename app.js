@@ -5,12 +5,12 @@ var authConfig = require('./config/secrets'),
   TwitterStrategy = require("passport-twitter"),
   SECRETS = require("./config/secrets")
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
 
   done(null, user);
 });
 
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser((obj, done) => {
   done(null, obj);
 });
 
@@ -18,7 +18,7 @@ passport.use(new GoogleStrategy(
 
   authConfig.google,
 
-  function(accessToken, refreshToken, profile, done) {
+  (accessToken, refreshToken, profile, done) => {
     return done(null, profile);
   }
 ));
@@ -28,7 +28,7 @@ passport.use(new TwitterStrategy({
     consumerSecret: SECRETS.twitter.clientSecret,
     callbackURL: "http://localhost:3000/auth/twitter/callback"
   },
-  function(token, tokenSecret, profile, cb) {
+  (token, tokenSecret, profile, cb) => {
     cb();
   }
 ));
@@ -59,13 +59,13 @@ app.use(express.static(__dirname + '/public'));
 
 // Application routes
 
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.render('index', {
     user: req.user
   });
 });
 
-app.get('/login', function(req, res) {
+app.get('/login', (req, res) => {
   res.render('login', {
     user: req.user
   });
@@ -74,7 +74,7 @@ app.get('/login', function(req, res) {
 app.get("/auth/twitter", passport.authenticate("twitter"));
 app.get('/auth/twitter/callback',
   passport.authenticate('twitter', { failureRedirect: '/login' }),
-  function(req, res) {
+  (req, res) => {
     // Successful authentication, redirect home.
     res.redirect('/');
   });
@@ -86,23 +86,23 @@ app.get('/auth/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/login'
   }),
-  function(req, res) {
+  (req, res) => {
     // Authenticated successfully
     res.redirect('/');
   });
 
-app.get('/account', ensureAuthenticated, function(req, res) {
+app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', {
     user: req.user
   });
 });
 
-app.get('/logout', function(req, res) {
+app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
 
-app.listen(process.env.PORT || 3000, function() {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Listening...");
 });
 
