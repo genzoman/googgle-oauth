@@ -1,9 +1,8 @@
 var authConfig = require('./config/secrets'),
   express = require('express'),
   passport = require('passport'),
-  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
-  TwitterStrategy = require("passport-twitter"),
-  SECRETS = require("./config/secrets")
+  SECRETS = require("./config/secrets"),
+  authRoutes = require("./routes/authRoutes");
 
 passport.serializeUser((user, done) => {
 
@@ -13,28 +12,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((obj, done) => {
   done(null, obj);
 });
-
-passport.use(new GoogleStrategy(
-
-  authConfig.google,
-
-  (accessToken, refreshToken, profile, done) => {
-    return done(null, profile);
-  }
-));
-
-passport.use(new TwitterStrategy({
-    consumerKey: SECRETS.twitter.clientID,
-    consumerSecret: SECRETS.twitter.clientSecret,
-    callbackURL: "http://localhost:3000/auth/twitter/callback"
-  },
-  (token, tokenSecret, profile, cb) => {
-    cb();
-  }
-));
-
-
-// Express 4 boilerplate
 
 var app = express();
 app.set('view engine', 'hbs');
@@ -46,7 +23,7 @@ var session = require('express-session');
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'woot',
   resave: false,
   saveUninitialized: false
 }));
@@ -56,8 +33,6 @@ app.use(passport.session());
 
 app.use(express.static(__dirname + '/public'));
 
-
-// Application routes
 
 app.get('/', (req, res) => {
   res.render('index', {
@@ -71,26 +46,8 @@ app.get('/login', (req, res) => {
   });
 });
 
-app.get("/auth/twitter", passport.authenticate("twitter"));
-app.get('/auth/twitter/callback',
-  passport.authenticate('twitter', { failureRedirect: '/login' }),
-  (req, res) => {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
 
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['openid email profile'] }));
-
-app.get('/auth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/login'
-  }),
-  (req, res) => {
-    // Authenticated successfully
-    res.redirect('/');
-  });
-
+app.use("/auth", authRoutes);
 app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', {
     user: req.user
