@@ -47,5 +47,4 @@ authRouter.get("/google/callback",
   }
 );
 
-authRouter
 module.exports = authRouter;
