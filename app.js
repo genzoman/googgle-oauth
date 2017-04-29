@@ -2,7 +2,8 @@ var authConfig = require('./config/secrets'),
   express = require('express'),
   passport = require('passport'),
   SECRETS = require("./config/secrets"),
-  authRoutes = require("./routes/authRoutes");
+  authRoutes = require("./routes/authRoutes"),
+  uploadRoutes = require("./routes/uploadRoutes");
 
 passport.serializeUser((user, done) => {
 
@@ -48,6 +49,7 @@ app.get('/login', (req, res) => {
 
 
 app.use("/auth", authRoutes);
+app.use("/upload", uploadRoutes);
 app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', {
     user: req.user
