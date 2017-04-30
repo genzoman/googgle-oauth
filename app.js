@@ -3,7 +3,8 @@ var authConfig = require('./config/secrets'),
   passport = require('passport'),
   SECRETS = require("./config/secrets"),
   authRoutes = require("./routes/authRoutes"),
-  uploadRoutes = require("./routes/uploadRoutes");
+  uploadRoutes = require("./routes/uploadRoutes"),
+  visionRoutes = require("./routes/visionRoutes");
 
 passport.serializeUser((user, done) => {
 
@@ -50,6 +51,7 @@ app.get('/login', (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/upload", uploadRoutes);
+app.use("/vision", visionRoutes);
 app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', {
     user: req.user
