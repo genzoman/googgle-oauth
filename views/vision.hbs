@@ -1,5 +1,9 @@
-<ul class="people_list">
+
+<form id="form-id" method="post" action="/vision">
+<input type="hidden" name="your-variable-name" value="your-variable-value">
+<ul class="image_list">
   {{#each files}}
-    <li>{{this}}</li>
+    <li onclick="document.getElementById('form-id').submit();">{{this}}</li>
   {{/each}}
 </ul>
+</form>
