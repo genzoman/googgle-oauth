@@ -4,7 +4,8 @@ var authConfig = require('./config/secrets'),
   SECRETS = require("./config/secrets"),
   authRoutes = require("./routes/authRoutes"),
   uploadRoutes = require("./routes/uploadRoutes"),
-  visionRoutes = require("./routes/visionRoutes");
+  visionRoutes = require("./routes/visionRoutes"),
+  bodyParser = require("body-parser");
 
 passport.serializeUser((user, done) => {
 
@@ -17,6 +18,7 @@ passport.deserializeUser((obj, done) => {
 
 var app = express();
 app.set('view engine', 'hbs');
+ app.use(bodyParser.urlencoded({ extended: true }));
 
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');

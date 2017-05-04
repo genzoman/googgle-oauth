@@ -12,7 +12,7 @@ visionRouter.get("/", (req, res) => {
 });
 const imageUrl = "/Users/darrincecil/projects/passport-google-oauth2-example/images/snek.jpg";
 visionRouter.post("/", (req, res) => {
-  vision.detectText(imageUrl, (err, text) => {
+  vision.detectText(req.body.url, (err, text) => {
     res.send(text);
   })
 });
