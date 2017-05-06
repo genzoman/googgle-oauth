@@ -43,7 +43,7 @@ authRouter.get("/google/callback",
   }
   ),
   (req, res) => {
-    res.redirect("/"); //successful auth, redirect home, but res is undefined
+    res.redirect("/");
   }
 );
 

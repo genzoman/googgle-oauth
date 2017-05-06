@@ -7,6 +7,6 @@ router.get("/", (req, res, next) => {
   res.render("upload");
 })
 router.post('/', upload.any(), function(req, res) {
-  res.send(req.files);
+  res.redirect("/");
 });
 module.exports = router;

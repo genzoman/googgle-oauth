@@ -17,4 +17,3 @@ visionRouter.post("/", (req, res) => {
   })
 });
 module.exports = visionRouter;
-///Users/darrincecil/projects/passport-google-oauth2-example/images
