@@ -16,6 +16,42 @@ class Bucket {
     }
   }
 
+  file(fileName) {
+    return this.bucket_.file(fileName);
+  }
+
+  stream(req, res, next) {
+    var bucketName = "tasty-tasty-new-bucket"
+    function getPublicUrl(filename) {
+      return `https://storage.googleapis.com/${bucketName}/${filename}`;
+    }
+    if (!req.file) {
+      return next();
+    }
+
+    const gcsname = Date.now() + req.file.originalname;
+    const file = this.bucket_.file(gcsname);
+
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype
+      }
+    });
+
+    stream.on('error', (err) => {
+      req.file.cloudStorageError = err;
+      next(err);
+    });
+
+    stream.on('finish', () => {
+      req.file.cloudStorageObject = gcsname;
+      req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
+      next();
+    });
+
+    stream.end(req.file.buffer);
+  }
+
   async getFiles() {
     return await this.bucket_.getFiles();
   }
@@ -24,7 +60,7 @@ class Bucket {
     try {
       return await this.bucket_.upload(path);
     } catch (e) {
-
+      debugger;
     }
   }
 
@@ -59,5 +95,6 @@ class Bucket {
     return await gcs.createBucket(bucketName);
   }
 }
-let bucket = new Bucket(BUCKET_NAME);
-
+module.exports = function() {
+  return Bucket
+}
