@@ -21,9 +21,8 @@ class Bucket {
   }
 
   stream(req, res, next) {
-    var bucketName = "tasty-tasty-new-bucket"
     function getPublicUrl(filename) {
-      return `https://storage.googleapis.com/${bucketName}/${filename}`;
+      return `https://storage.googleapis.com/${BUCKET_NAME}/${filename}`;
     }
     if (!req.file) {
       return next();
@@ -95,6 +94,4 @@ class Bucket {
     return await gcs.createBucket(bucketName);
   }
 }
-module.exports = function() {
-  return Bucket
-}
+module.exports = Bucket;

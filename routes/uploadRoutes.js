@@ -6,11 +6,9 @@ const express = require('express')
   , router = express.Router()
   , request = require("request")
   , file = require("fs")
-  , Bucket = require("../services/cloud-storage")("tasty-tasty-new-bucket")
+  , Bucket = require("../services/cloud-storage")
   , CLOUD_BUCKET = "tasty-tasty-new-bucket";''
 
-
-;
 var multer = require("multer");
 const diskStorage = multer.diskStorage({
   destination: (req, files, cb) => {
