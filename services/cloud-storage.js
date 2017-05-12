@@ -59,7 +59,7 @@ class Bucket {
     try {
       return await this.bucket_.upload(path);
     } catch (e) {
-      debugger;
+
     }
   }
 
