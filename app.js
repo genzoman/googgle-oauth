@@ -2,7 +2,10 @@ var authConfig = require('./config/secrets'),
   express = require('express'),
   passport = require('passport'),
   SECRETS = require("./config/secrets"),
-  authRoutes = require("./routes/authRoutes");
+  authRoutes = require("./routes/authRoutes"),
+  uploadRoutes = require("./routes/uploadRoutes"),
+  visionRoutes = require("./routes/visionRoutes"),
+  bodyParser = require("body-parser");
 
 passport.serializeUser((user, done) => {
 
@@ -15,6 +18,7 @@ passport.deserializeUser((obj, done) => {
 
 var app = express();
 app.set('view engine', 'hbs');
+ app.use(bodyParser.urlencoded({ extended: true }));
 
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -48,6 +52,8 @@ app.get('/login', (req, res) => {
 
 
 app.use("/auth", authRoutes);
+app.use("/upload", uploadRoutes);
+app.use("/vision", visionRoutes);
 app.get('/account', ensureAuthenticated, (req, res) => {
   res.render('account', {
     user: req.user
